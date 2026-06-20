@@ -1,0 +1,15 @@
+# Local relationship data
+data/contacts.json
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.coverage
+htmlcov/
+
+# Virtual environments and editor files
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
