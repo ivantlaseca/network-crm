@@ -46,7 +46,8 @@ def note(store: ContactStore) -> None:
         contacts.append(contact)
         print(f"Created contact for {contact.name}.")
     conversation = Conversation(
-        id=str(uuid4()), date=date.today().isoformat(),
+        id=str(uuid4()),
+        date=prompts.ask_date("When did you speak?", date.today().isoformat()),
         learned=prompts.ask_text("What did you learn?", required=True),
         suggested=prompts.ask_text("What did they suggest doing?", required=True),
         next_steps=prompts.ask_text("What are your next steps?", required=True),
@@ -142,6 +143,7 @@ def edit(store: ContactStore) -> None:
     if not selected:
         print("Edit cancelled.")
         return
+    selected.date = prompts.ask_date("Conversation date", selected.date)
     selected.learned = prompts.ask_text("What did you learn?", required=True, default=selected.learned)
     selected.suggested = prompts.ask_text("What did they suggest doing?", required=True, default=selected.suggested)
     selected.next_steps = prompts.ask_text("What are your next steps?", required=True, default=selected.next_steps)
@@ -204,4 +206,3 @@ def delete(store: ContactStore) -> None:
     contacts.remove(contact)
     store.save(contacts)
     print(f"Deleted {contact.name}.")
-

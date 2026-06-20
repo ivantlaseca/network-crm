@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Callable, TypeVar
 
 from .models import Contact
@@ -43,6 +44,20 @@ def ask_rating(label: str, default: int | None = None) -> int:
         if 1 <= rating <= 5:
             return rating
         print("Please enter a whole number from 1 to 5.")
+
+
+def ask_date(label: str, default: str) -> str:
+    while True:
+        value = input(f"{label} [{default}] (YYYY-MM-DD, or 0 to cancel): ").strip()
+        if value == "0":
+            raise PromptCancelled
+        candidate = value or default
+        try:
+            date.fromisoformat(candidate)
+        except ValueError:
+            print("Please enter a valid date in YYYY-MM-DD format.")
+            continue
+        return candidate
 
 
 def ask_number(label: str, minimum: int, maximum: int) -> int:

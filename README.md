@@ -9,6 +9,7 @@ Networking creates a trail of advice, commitments, and context that is easy to l
 ## What the tool does
 
 - Records what you learned, what was suggested, and your next steps after a conversation.
+- Records the actual conversation date, defaulting to today and remaining editable later.
 - Keeps helpfulness and referral-willingness signals alongside factual notes.
 - Derives relationship state, themes, and reconnection ideas when displayed.
 - Surfaces worthwhile relationships through `today`.
@@ -78,7 +79,7 @@ python main.py delete
 
 ## Example workflow after a coffee chat
 
-Run `python main.py note`. Enter the person's name; if they are new, add their company and role. Record what you learned, their advice, your own next steps, optional miscellaneous context, helpfulness, and their referral signal. The app saves the conversation and immediately shows the updated relationship summary. Later, use `today` to see which relationships have a genuine reason for attention.
+Run `python main.py note`. Enter the person's name; if they are new, add their company and role. Accept today's date or enter the actual conversation date, then record what you learned, their advice, your own next steps, optional miscellaneous context, helpfulness, and their referral signal. The app saves the conversation and immediately shows the updated relationship summary. If the date was wrong, `edit` can correct it later. Use `today` to see which relationships have a genuine reason for attention.
 
 ## Project structure
 

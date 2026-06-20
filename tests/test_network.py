@@ -112,11 +112,12 @@ class CommandTests(unittest.TestCase):
         return output.getvalue()
 
     def test_note_creates_contact_and_reprompts_rating(self) -> None:
-        answers = iter(["Grace Hopper", "Navy", "Computer Scientist", "Compilers", "Keep building", "Build demo", "", "bad", "5", "4"])
+        answers = iter(["Grace Hopper", "Navy", "Computer Scientist", "2026-04-02", "Compilers", "Keep building", "Build demo", "", "bad", "5", "4"])
         with patch("builtins.input", side_effect=lambda _: next(answers)):
             output = self.capture(commands.note, self.store)
         saved = self.store.load()
         self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0].conversations[0].date, "2026-04-02")
         self.assertEqual(saved[0].conversations[0].helpfulness, 5)
         self.assertIn("Conversation saved", output)
 
@@ -129,10 +130,12 @@ class CommandTests(unittest.TestCase):
 
     def test_edit_conversation(self) -> None:
         self.store.save([contact()])
-        answers = iter(["Ada", "1", "1", "New learning", "", "", "", "", ""])
+        answers = iter(["Ada", "1", "1", "2026-03-15", "New learning", "", "", "", "", ""])
         with patch("builtins.input", side_effect=lambda _: next(answers)):
             self.capture(commands.edit, self.store)
-        self.assertEqual(self.store.load()[0].conversations[0].learned, "New learning")
+        saved = self.store.load()[0].conversations[0]
+        self.assertEqual(saved.date, "2026-03-15")
+        self.assertEqual(saved.learned, "New learning")
 
     def test_delete_cancel_and_confirm(self) -> None:
         self.store.save([contact()])
@@ -164,7 +167,7 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(output.count("Please choose a number from 1 to 8."), 2)
 
     def test_note_can_cancel_mid_workflow_without_saving(self) -> None:
-        answers = ["Grace Hopper", "Navy", "Computer Scientist", "Compilers", "0"]
+        answers = ["Grace Hopper", "Navy", "Computer Scientist", "", "Compilers", "0"]
         with patch("builtins.input", side_effect=answers):
             with self.assertRaises(PromptCancelled):
                 self.capture(commands.note, self.store)
@@ -172,13 +175,23 @@ class CommandTests(unittest.TestCase):
 
     def test_edit_can_cancel_without_saving_partial_changes(self) -> None:
         self.store.save([contact()])
-        answers = ["Ada", "1", "1", "Changed in memory", "0"]
+        answers = ["Ada", "1", "1", "", "Changed in memory", "0"]
         with patch("builtins.input", side_effect=answers):
             with self.assertRaises(PromptCancelled):
                 self.capture(commands.edit, self.store)
         saved = self.store.load()[0].conversations[0]
         self.assertEqual(saved.learned, "career strategy career")
         self.assertEqual(saved.suggested, "share progress")
+
+    def test_note_reprompts_invalid_conversation_date(self) -> None:
+        answers = [
+            "Katherine Johnson", "NASA", "Mathematician", "last Tuesday", "2026-06-01",
+            "Orbital mechanics", "Keep learning", "Read notes", "", "5", "3",
+        ]
+        with patch("builtins.input", side_effect=answers):
+            output = self.capture(commands.note, self.store)
+        self.assertIn("Please enter a valid date", output)
+        self.assertEqual(self.store.load()[0].conversations[0].date, "2026-06-01")
 
     def test_single_contact_selection_can_be_cancelled(self) -> None:
         self.store.save([contact()])
