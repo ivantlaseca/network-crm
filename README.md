@@ -109,7 +109,3 @@ python -m unittest discover -v
 ## Future improvements
 
 Possible Phase 2 work includes AI-assisted summaries, stronger theme extraction, export/import, company opportunity tracking, MCP integration, and optional calendar or email integrations. None is part of this MVP.
-
-## Interview explanation
-
-“I built a terminal-based relationship memory system to reduce the cognitive load of networking during my career transition. Instead of building a spreadsheet-style CRM, I designed it around conversations. The tool captures what I learned, what was suggested, my next steps, helpfulness, and referral willingness. It then derives relationship states and surfaces connections worth nurturing, without turning relationships into rigid deadlines or generating messages for me.”
